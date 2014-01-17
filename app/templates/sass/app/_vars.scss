@@ -1,0 +1,51 @@
+// Grays
+// -------------------------
+$black              : #000000 !default;
+$grayDark           : #666666 !default;
+$gray               : #919191 !default;
+$grayLight          : #bbbbbb !default;
+$grayLightest       : #e9e9e9 !default;
+$white              : #ffffff !default;
+
+// Custom colors
+// -------------------------
+$blueDark           : #063368 !default;
+$blue               : #0c63b4 !default;
+$blueLight          : #24aecd !default;
+$orange             : #ea760a !default;
+$red                : #BB133E !default;
+$green              : #007E7A !default;
+
+// Links
+// -------------------------
+$linkColor          : #000000 !default;
+$linkColorHover     : $linkColor !default;
+
+// Base
+// -------------------------
+$base-spacing-unit  : 20px !default;
+$base-font-size     : 16px !default;
+$base-border-radius : 7px !default;
+
+// Margins e Paddings
+// -------------------------
+$margin_padding: ('margin' 'mar' 'padding' 'pad')
+                 ('margin-top' 'mar-t' 'padding-top' 'pad-t')
+                 ('margin-right' 'mar-r' 'padding-right' 'pad-r')
+                 ('margin-bottom' 'mar-b' 'padding-bottom' 'pad-b')
+                 ('margin-left' 'mar-l' 'padding-left' 'pad-l')
+                 ;
+
+$lista_cores: ('black' $black)
+              ('grayDark' $grayDark)
+              ('gray' $gray)
+              ('grayLight' $grayLight)
+              ('grayLightest' $grayLightest)
+              ('white' $white)
+              ('blueDark' $blueLight)
+              ('blue' $blue)
+              ('blueLight' $blueLight)
+              ('orange' $orange)
+              ('red' $red)
+              ('green' $green)
+              ;

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= projectName %></title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico">
+    <% if (addHtml5shiv) { %><!--[if lt IE 9]><script src="/js/lib/html5shiv.js"></script><![endif]--><% } %>
+</head>
+<body>
+    <article class="pad-20">
+        <figure class="mar-b-20">
+            <img src="/images/wall-e.png" alt="wall-E">
+            <figcaption class="fs-12"><b>WALL • <span class="bg-color-red txt-color-white circle wallE">E</span></b></figcaption>
+        </figure>
+        <h1 class="txt-color-gray mar-b-20">Basic Awesome App</h1>
+        <p>Making a better and awesome web!!!</p>
+    </article>
+    <script src="/js/helpers.js"></script>
+    <script src="/js/lib/require.js" data-main="/js/main"></script>
+</body>
+</html>
