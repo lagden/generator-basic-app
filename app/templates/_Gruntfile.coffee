@@ -49,8 +49,8 @@ module.exports = (grunt) ->
         bsFiles:
           src: 'build/css/*.css'
         options:
-          notify: true
-          watchTask: true,
+          notify: false
+          watchTask: false,
           port: serverPort
           server:
             baseDir: [
@@ -97,12 +97,12 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', [
     'sass'
     'autoprefixer'
-    'requirejs'
   ]
 
   grunt.registerTask 'build', [
     'clean'
     'default'
+    'requirejs'
   ]
 
   grunt.registerTask 'server', [
@@ -111,10 +111,9 @@ module.exports = (grunt) ->
     'watch'
   ]
 
-  grunt.registerTask 'server-prod', [
+  grunt.registerTask 'server:prod', [
     'build'
-    'browserSync:dev'
-    'watch'
+    'browserSync:dist'
   ]
 
   return
