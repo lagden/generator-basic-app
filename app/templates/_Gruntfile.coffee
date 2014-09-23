@@ -17,7 +17,7 @@ module.exports = (grunt) ->
           noCache: true
           compass: true
         files:
-          'dev/css/main.css': 'sass/main.sass'
+          'dev/css/main.css': 'sass/main.scss'
 
     autoprefixer:
       dist:
@@ -26,7 +26,7 @@ module.exports = (grunt) ->
 
     watch:
       sass:
-        files: ['sass/{,*/}*.sass']
+        files: ['sass/{,*/}*.scss']
         tasks: ['sass', 'autoprefixer']
 
     clean:

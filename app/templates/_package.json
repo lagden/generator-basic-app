@@ -21,7 +21,8 @@
         "grunt-contrib-watch": "^0.6.1",
         "grunt-contrib-requirejs": "^0.4.4",
         "matchdep": "^0.3.0",
-        "random-js": "^1.0.4"
+        "random-js": "^1.0.4",
+        "rjs-build-analysis": "0.0.3"
     },
     "scripts": {
         "install": "volo add -skipexists"

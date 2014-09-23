@@ -88,9 +88,6 @@ BasicAppGenerator.prototype.app = function app() {
     this.copy('config.rb', 'config.rb');
     this.directory('sass','sass');
 
-    // Tools - r.js
-    this.directory('tools');
-
     // Others
     this.copy('editorconfig'          , '.editorconfig');
     this.copy('jshintrc'              , '.jshintrc');
