@@ -37,10 +37,6 @@ BasicAppGenerator.prototype.askFor = function askFor() {
         message: 'Qual o nome do desenvolvedor do projeto?',
         default: 'Thiago Lagden'
     }, {
-        name: 'projectLocalServerPort',
-        message: 'Qual é será a porta utilizada pelo servidor local?',
-        default: 9000
-    }, {
         name: 'useJquery',
         type: 'confirm',
         message: 'Deseja usar jQuery?',
@@ -52,26 +48,8 @@ BasicAppGenerator.prototype.askFor = function askFor() {
         name: 'jqueryVersion',
         type: 'list',
         message: 'Escolha a versão que deseja usar jQuery?',
-        choices: ['1.10.2', '2.0.3'],
+        choices: ['1.10.2', '2.1.0'],
         default: 1
-    }, {
-        name: 'useHandlebars',
-        type: 'confirm',
-        message: 'Deseja usar Handlebars?',
-        default: true
-    }, {
-        when: function(response) {
-            return response.useHandlebars
-        },
-        name: 'useRequireText',
-        type: 'confirm',
-        message: 'Deseja utilizar o plugin "text" para auxiliar no carregamento dos recursos?',
-        default: true
-    }, {
-        name: 'addHtml5shiv',
-        type: 'confirm',
-        message: 'Deseja adicionar o html5shiv?',
-        default: false
     }, {
         name: 'useBower',
         type: 'confirm',
@@ -88,12 +66,8 @@ BasicAppGenerator.prototype.askFor = function askFor() {
         this.projectName = props.projectName;
         this.projectDescription = props.projectDescription;
         this.projectAuthor = props.projectAuthor;
-        this.projectLocalServerPort = props.projectLocalServerPort;
         this.useJquery = props.useJquery;
         this.jqueryVersion = props.jqueryVersion;
-        this.useHandlebars = props.useHandlebars;
-        this.useRequireText = props.useRequireText;
-        this.addHtml5shiv = props.addHtml5shiv;
         this.useBower = props.useBower;
         this.installProjectDependencies = props.installProjectDependencies;
         cb();
@@ -118,11 +92,11 @@ BasicAppGenerator.prototype.app = function app() {
     this.directory('tools');
 
     // Others
-    this.copy('editorconfig', '.editorconfig');
-    this.copy('jshintrc', '.jshintrc');
-    this.copy('gitignore', '.gitignore');
-    this.copy('README.md', 'README.md');
-    this.template('_Gruntfile.js', 'Gruntfile.js');
+    this.copy('editorconfig'          , '.editorconfig');
+    this.copy('jshintrc'              , '.jshintrc');
+    this.copy('gitignore'             , '.gitignore');
+    this.copy('README.md'             , 'README.md');
+    this.template('_Gruntfile.coffee' , 'Gruntfile.coffee');
 };
 
 BasicAppGenerator.prototype.writePackage = function writePackage() {
@@ -131,10 +105,7 @@ BasicAppGenerator.prototype.writePackage = function writePackage() {
     _package.name = this._.slugify(this.projectName);
     _package.description = this.projectDescription;
     _package.author.name = this.projectAuthor;
-    _package.volo.dependencies['require'] = "github:jrburke/requirejs/2.1.9";
-    if (this.useRequireText) _package.volo.dependencies['text'] = "github:requirejs/text/2.0.10";
-    if (this.useJquery) _package.volo.dependencies['jquery'] = 'http://ajax.googleapis.com/ajax/libs/jquery/' + this.jqueryVersion + '/jquery.js';
-    if (this.addHtml5shiv) _package.volo.dependencies['html5shiv'] = 'http://rawgithub.com/aFarkas/html5shiv/master/dist/html5shiv.js';
-    if (this.useHandlebars) _package.volo.dependencies['handlebars'] = 'http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js';
+    _package.volo.dependencies['require'] = "github:jrburke/requirejs/2.1.15";
+    if (this.useJquery) _package.volo.dependencies['jquery'] = 'http://code.jquery.com/jquery-' + this.jqueryVersion + '.js';
     this.write('package.json', JSON.stringify(_package));
 };

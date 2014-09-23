@@ -1,7 +1,11 @@
-requirejs.config({
-    waitSeconds: 30,
-    baseUrl: 'js/lib',
-    paths: {
-        app: '../app'
-    }
+define('common', function() {
+    'use strict';
+
+    requirejs.config({
+        baseUrl: 'js/lib',
+        paths: {
+            app: '../app'
+        }
+    });
+
 });

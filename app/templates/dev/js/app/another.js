@@ -4,6 +4,6 @@ define(function(require) {
 
     var $ = require('jquery');
 
-    console.log('Awesome!!', 'jquery', $.fn.jquery);
+    console.log('Another stuff!!', 'jquery', $.fn.jquery);
 
 });
