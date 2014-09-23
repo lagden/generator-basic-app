@@ -82,17 +82,20 @@ module.exports = (grunt) ->
             done()
             return
 
-  grunt.registerTask 'build', [
-    'clean'
+  grunt.registerTask 'default', [
     'sass'
     'autoprefixer'
     'requirejs'
   ]
-  grunt.registerTask 'default', ['build']
   grunt.registerTask 'server', [
     'default'
     'browserSync:dev'
     'watch'
+  ]
+
+  grunt.registerTask 'build', [
+    'clean'
+    'default'
   ]
 
   return
