@@ -10,24 +10,66 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON "package.json"
 
+    coffeelint:
+      app: ['coffee/{,*/}*.coffee']
+
+    coffee:
+      compile:
+        options:
+          bare: true
+        expand: true,
+        flatten: false,
+        cwd: 'coffee/',
+        src: ['{,*/}*.coffee'],
+        dest: 'dev/js/',
+        ext: '.js'
+
+    jade:
+      html:
+        options:
+          pretty: false
+        files:
+          'dev/index.html': ['jade/html/index.jade']
+      js:
+        options:
+          amd: true
+          client: true
+          namespace: false
+        files:
+          'dev/js/templates/sample.js': ['jade/js/sample.jade']
+
     sass:
       plugin:
         options:
           style: 'expanded'
-          noCache: true
+          noCache: false
           compass: true
+          update: true
+          unixNewlines: true
         files:
-          'dev/css/main.css': 'sass/main.scss'
+          'dev/css/app.css': 'sass/app.sass'
 
     autoprefixer:
       dist:
-        src: 'dev/css/main.css'
-        dest: 'dev/css/main.css'
+        src: 'dev/css/app.css'
+        dest: 'dev/css/app.css'
 
     watch:
+      script:
+        files: ['coffee/{,*/}*.coffee']
+        tasks: ['coffeelint', 'coffee']
+
       sass:
-        files: ['sass/{,*/}*.scss']
+        files: ['sass/{,*/}*.sass']
         tasks: ['sass', 'autoprefixer']
+
+      jade2html:
+        files: ['jade/html/{,*/}*.jade']
+        tasks: ['jade:html']
+
+      jade2js:
+        files: ['jade/js/{,*/}*.jade']
+        tasks: ['jade:js']
 
     clean:
       dist: ["build"]
@@ -75,13 +117,8 @@ module.exports = (grunt) ->
               include: ['jquery']
             }
             {
-              name: '../main'
-              include: ['app/main']
-              exclude: ['../common']
-            }
-            {
-              name: '../another'
-              include: ['app/another']
+              name: '../app'
+              include: ['app/app', 'templates/sample']
               exclude: ['../common']
             }
           ]
@@ -95,6 +132,9 @@ module.exports = (grunt) ->
             return
 
   grunt.registerTask 'default', [
+    'coffeelint'
+    'coffee'
+    'jade'
     'sass'
     'autoprefixer'
   ]

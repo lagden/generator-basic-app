@@ -54,7 +54,7 @@ BasicAppGenerator.prototype.askFor = function askFor() {
         name: 'useBower',
         type: 'confirm',
         message: 'Deseja também usar Bower?',
-        default: false
+        default: true
     }, {
         name: 'installProjectDependencies',
         type: 'confirm',
@@ -78,11 +78,11 @@ BasicAppGenerator.prototype.app = function app() {
     // App Dev
     this.directory('dev');
 
-    // Bower
-    if (this.useBower) {
-        this.template('_bower.json', 'bower.json');
-        this.copy('bowerrc', '.bowerrc');
-    }
+    // Coffee
+    this.directory('coffee','coffee');
+
+    // Jade
+    this.directory('jade','jade');
 
     // SASS
     this.copy('config.rb', 'config.rb');
@@ -94,6 +94,12 @@ BasicAppGenerator.prototype.app = function app() {
     this.copy('gitignore'             , '.gitignore');
     this.copy('README.md'             , 'README.md');
     this.template('_Gruntfile.coffee' , 'Gruntfile.coffee');
+
+    // Bower
+    if (this.useBower) {
+        this.template('_bower.json', 'bower.json');
+        this.copy('bowerrc', '.bowerrc');
+    }
 };
 
 BasicAppGenerator.prototype.writePackage = function writePackage() {
@@ -102,7 +108,9 @@ BasicAppGenerator.prototype.writePackage = function writePackage() {
     _package.name = this._.slugify(this.projectName);
     _package.description = this.projectDescription;
     _package.author.name = this.projectAuthor;
+    _package.scripts.install = 'volo add -skipexists' + (this.useBower ? ' && bower install' : '');
     _package.volo.dependencies['require'] = "github:jrburke/requirejs/2.1.15";
+    _package.volo.dependencies['jade'] = "https://raw.githubusercontent.com/visionmedia/jade/1.7.0/runtime.js";
     if (this.useJquery) _package.volo.dependencies['jquery'] = 'http://code.jquery.com/jquery-' + this.jqueryVersion + '.js';
     this.write('package.json', JSON.stringify(_package));
 };

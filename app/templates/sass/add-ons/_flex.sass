@@ -1,0 +1,38 @@
+=flex
+    display: flex
+
+=flexMobile
+    +flex
+    flex-flow: column nowrap
+
+=flexDesktop
+    +flex
+    flex-flow: row nowrap
+
+=flexItems($values)
+    flex: $values
+
+.rowflex
+    +flexDesktop
+
+@for $c from 1 through 12
+    .colflex-#{$c}
+        +flexItems($c)
+
+
+$aligns: ("start": "flex-start", "end": "flex-end", "center": "center", "stretch": "stretch", "baseline": "baseline")
+@each $c in $aligns
+    $k: nth($c, 1)
+    $v: nth($c, 2)
+    .align-items--#{$k}
+        align-items: #{$v}
+
+$propValues: ("start": "flex-start", "end": "flex-end", "center": "center", "between": "space-between", "around": "space-around")
+@each $c in $propValues
+    $k: nth($c, 1)
+    $v: nth($c, 2)
+    .justify-content--#{$k}
+        justify-content: #{$v}
+
+    .align-content--#{$k}
+        align-content: #{$v}

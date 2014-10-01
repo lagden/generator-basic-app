@@ -1,0 +1,172 @@
+// `Default font for form elements.
+//----------------------------------------------------------------------------------------------------
+
+$form-font-stack: Arial, "Liberation Sans", FreeSans, sans-serif !default
+$form-font-size: 13px !default
+
+// `Form Element Reset.
+//----------------------------------------------------------------------------------------------------
+
+input[type="search"]::-webkit-search-decoration
+    display: none
+
+input[type="radio"],
+input[type="checkbox"]
+    margin: 0
+
+button,
+a.button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+input[type="image"]
+    background: none
+    border: 0
+    cursor: pointer
+    display: inline-block
+    overflow: visible
+    margin: 0
+    outline: 0
+    padding: 0
+    vertical-align: top
+    text-align: center
+    text-decoration: none
+    width: auto
+    // Undo WebKit defaults
+    -webkit-appearance: none
+    // Adjust background display
+    -webkit-background-clip: padding
+    -moz-background-clip: padding
+    background-clip: padding-box
+    // Remove rounded corners
+    -webkit-border-radius: 0
+    -moz-border-radius: 0
+    border-radius: 0
+    // Change box model
+    -webkit-box-sizing: border-box
+    -moz-box-sizing: border-box
+    box-sizing: border-box
+    // Helvetica Neue present, because it works better
+    // for line-height on buttons than Arial, on OS X.
+    font-size: $form-font-size
+    font-family: $form-font-stack
+
+button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"]
+    // Firefox has this in its user-agent (?)
+    // stylesheet, so let's just roll with it.
+    //
+    // http://meyerweb.com/eric/thoughts/2008/05/06/line-height-abnormal
+    //
+    // http://cssnewbie.com/input-button-line-height-bug
+    //
+    line-height: normal !important
+
+textarea,
+select,
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"]
+    background: none
+    border: 0
+    margin: 0
+    outline: 0
+    padding: 0
+    text-align: left
+    vertical-align: top
+    font-size: $form-font-size
+    // Leaving out Helvetica Neue, to not throw off size="..."
+    // on inputs. Arial is more reliable, on Windows and OS X.
+    font-family: $form-font-stack
+    // Undo WebKit defaults
+    -webkit-appearance: none
+    // Adjust background display
+    -webkit-background-clip: padding
+    -moz-background-clip: padding
+    background-clip: padding-box
+    // Remove rounded corners
+    -webkit-border-radius: 0
+    -moz-border-radius: 0
+    border-radius: 0
+    // Change box model
+    -webkit-box-sizing: border-box
+    -moz-box-sizing: border-box
+    box-sizing: border-box
+    // Get rid of up/down, plus/minus buttons
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button
+        -webkit-appearance: none
+
+button[disabled],
+input[disabled],
+select[disabled],
+select[disabled] option,
+select[disabled] optgroup,
+textarea[disabled]
+    -moz-user-select: -moz-none
+    -webkit-user-select: none
+    -khtml-user-select: none
+    user-select: none
+    cursor: default
+    // Opacity.
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=25)
+    opacity: 0.25
+
+textarea
+    min-height: 50px
+    overflow: auto
+    resize: vertical
+    width: 100%
+
+optgroup
+    font-style: normal
+    font-weight: normal
+    // Font family repeated, for Firefox.
+    font-family: $form-font-stack
+
+// For IE
+select::-ms-expand
+    // Get rid of drop-down arrow
+    display: none
+
+// For Firefox
+@-moz-document url-prefix()
+    input,
+    button,
+    select,
+    textarea
+        &:invalid
+            box-shadow: none
+        &::-moz-focus-inner
+            border: 0
+            padding: 0
+
+select,
+select[size="0"],
+select[size="1"]
+    +appearance(none)
+    appearance: none
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='512' viewBox='0 0 320 512' id='arrowDown'><path id='arrowDownPath' fill='#{$gray}' d='M256 160l-96 96-96-96-64 64 160 160 160-160-64-64z'></path></svg>")
+    background-repeat: no-repeat
+    background-position: calc(100% - 10px) center
+    background-size: 10px
+    // For WebKit.
+    @media (-webkit-min-device-pixel-ratio: 0)
+        padding-right: 25px
+
+// No arrow for multi-select
+select[size],
+select[multiple]
+    background-image: none

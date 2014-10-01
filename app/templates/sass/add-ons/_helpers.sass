@@ -1,0 +1,135 @@
+// For image replacement
+.ir
+    border: 0
+    font-size: 0
+    line-height: 0
+    text-shadow: none
+    color: transparent
+    background-color: transparent
+
+// Hide from both screenreaders and browsers: h5bp.com/u
+.hidden
+    display: none !important
+    visibility: hidden
+
+// Hide only visually, but have it available for screenreaders: h5bp.com/v
+.visuallyhidden
+    border: 0
+    clip: rect(0 0 0 0)
+    height: 1px
+    margin: -1px
+    overflow: hidden
+    padding: 0
+    position: absolute
+    width: 1px
+    // Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: h5bp.com/p
+    &.focusable
+        &:active,
+        &:focus
+            clip: auto
+            height: auto
+            margin: 0
+            overflow: visible
+            position: static
+            width: auto
+
+// Hide visually and from screenreaders, but maintain layout
+.invisible
+    visibility: hidden
+
+.invisible--absolute
+    @extend .invisible
+    position: absolute
+
+// Put element on center
+.absoluteCenter
+    transform: translate3d(-50%, -50%, 0)
+    left: 50%
+    top: 50%
+    position: absolute
+
+// Complementos simples
+.float--right
+    float: right !important
+.float--left
+    float: left !important
+.float--none
+    float: none !important
+
+.text--left
+    text-align: left !important
+.text--center
+    text-align: center !important
+.text--right
+    text-align: right !important
+
+.margin--center
+    margin-left: auto !important
+    margin-right: auto !important
+
+.cf
+    +cf
+
+.bb
+    box-sizing: border-box
+
+.bl
+    display: block !important
+
+.pr
+    position: relative
+
+.bold
+    font-weight: bold
+
+.clear
+    clear: both
+    float: none
+
+.caps
+    text-transform: uppercase !important
+
+.hand
+    cursor: pointer
+
+$verticalAligns: "middle" "top" "baseline" "bottom"
+@each $c in $verticalAligns
+    .vertical-align--#{$c}
+        vertical-align: #{$c}
+
+// Margins e Paddings
+// Usage: <div class="mar-10 pad-b-20">Yeahh</div>
+@each $c in $marginPadding
+    $margin: nth($c, 1)
+    $m: nth($c, 2)
+    $padding: nth($c, 3)
+    $pad: nth($c, 4)
+    @for $i from 0 through 35
+        .#{$m}-#{$i}
+            +attr-size($margin, $i, !important)
+        .#{$pad}-#{$i}
+            +attr-size($padding, $i, !important)
+        $i: $i + 5
+
+// Font size
+// Usage: <p class="fs-32">Yeahh</p>
+$fontSizes: 10 11 12 13 15 20 22 24 30
+@each $c in $fontSizes
+    .fs-#{$c}
+        +attr-size("font-size", $c, !important, em)
+
+// Cores
+// Usage: <div class="bg-color-black txt-color-white">Yeahh</div>
+@each $c in $lista_cores
+    $k: nth($c, 1)
+    $v: nth($c, 2)
+    .bg-color-#{$k}
+        background-color: $v !important
+    .txt-color-#{$k}
+        color: $v !important
+
+// Widths
+@for $c from 5 through 100
+    .width-#{$c}
+        width: $c * 1%
+    $c: $c + 5
