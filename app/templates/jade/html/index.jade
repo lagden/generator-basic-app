@@ -5,7 +5,10 @@ html
     title App
     link(rel='stylesheet', href='/css/app.css')
     link(rel='shortcut icon', type='image/ico', href='/favicon.ico')
-    script(src='/js/lib/require.js', data-main='/js/app', async)
+    if (build)
+      script(src='/js/main.js', async)
+    else
+      script(src='/js/lib/require.js', data-main='/js/main', async)
   body
     article.pad-20
       figure.mar-b-20

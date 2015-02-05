@@ -93,7 +93,7 @@ BasicAppGenerator.prototype.app = function app() {
     this.copy('jshintrc'              , '.jshintrc');
     this.copy('gitignore'             , '.gitignore');
     this.copy('README.md'             , 'README.md');
-    this.template('_Gruntfile.coffee' , 'Gruntfile.coffee');
+    this.copy('_Gruntfile.coffee'     , 'Gruntfile.coffee');
 
     // Bower
     if (this.useBower) {

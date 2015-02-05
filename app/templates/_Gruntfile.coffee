@@ -1,8 +1,5 @@
 'use strict'
 
-random = require 'random-js'
-serverPort = random().integer 8200, 8500
-
 module.exports = (grunt) ->
 
   require('load-grunt-tasks')(grunt)
@@ -68,7 +65,21 @@ module.exports = (grunt) ->
 
       html:
         options:
+          pretty: true
+        files: [
+          expand: true
+          flatten: false
+          cwd: '<%= project.jade %>/html'
+          src: ['{,*/}*.jade']
+          dest: '<%= project.dev %>'
+          ext: '.html'
+        ]
+
+      build:
+        options:
           pretty: false
+          data:
+            build: true
         files: [
           expand: true
           flatten: false
@@ -79,22 +90,23 @@ module.exports = (grunt) ->
         ]
 
     sass:
-      options:
-        style: 'expanded'
-        compass: true
-        noCache: true
-        update: false
-        unixNewlines: true
-        trace: true
-        sourcemap: 'none'
-      files: [
-        expand: true
-        flatten: false
-        cwd: '<%= project.sass %>'
-        src: ['*.sass']
-        dest: '<%= project.tmp %>/css'
-        ext: '.css'
-      ]
+      dist:
+        options:
+          style: 'expanded'
+          compass: true
+          noCache: true
+          update: false
+          unixNewlines: true
+          trace: true
+          sourcemap: 'none'
+        files: [
+          expand: true
+          flatten: false
+          cwd: '<%= project.sass %>'
+          src: ['*.sass']
+          dest: '<%= project.tmp %>/css'
+          ext: '.css'
+        ]
 
     autoprefixer:
       options:
@@ -158,7 +170,6 @@ module.exports = (grunt) ->
               drop_debugger: true
               unused: true
               drop_console: true
-
           optimizeCss: 'standard'
           generateSourceMaps: true
           keepAmdefine: true
@@ -168,8 +179,8 @@ module.exports = (grunt) ->
           baseUrl: '<%= project.dev %>/js/lib'
           mainConfigFile: '<%= project.dev %>/js/config.js'
           name: 'almond'
-          include: ['../app']
-          out: '<%= project.prod %>/js/app.js'
+          include: ['../main']
+          out: '<%= project.prod %>/js/main.js'
 
     cssmin:
       dynamic:
@@ -212,12 +223,13 @@ module.exports = (grunt) ->
           dest: '<%= project.prod %>'
         ]
 
-  concurrent:
-    dev: [
-      'scripts'
-      'styles'
-      'jade'
-    ]
+    concurrent:
+      dev: [
+        'scripts'
+        'styles'
+        'jade:js'
+        'jade:html'
+      ]
 
   grunt.registerTask 'default', [
     'concurrent:dev'
@@ -226,7 +238,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'scripts', [
     'coffeelint'
     'coffee'
-    'fixmyjs'
+    'fixmyjs:fix'
   ]
 
   grunt.registerTask 'styles', [
@@ -237,6 +249,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'build', [
     'clean'
     'default'
+    'jade:build'
     'requirejs'
     'cssmin'
     'imagemin'
