@@ -1,11 +1,8 @@
 // For image replacement
 .ir
-    border: 0
-    font-size: 0
-    line-height: 0
-    text-shadow: none
-    color: transparent
-    background-color: transparent
+    text-indent: 200%
+    white-space: nowrap
+    overflow: hidden
 
 // Hide from both screenreaders and browsers: h5bp.com/u
 .hidden
@@ -37,7 +34,7 @@
 .invisible
     visibility: hidden
 
-.invisible--absolute
+.invisible_absolute
     @extend .invisible
     position: absolute
 
@@ -49,35 +46,32 @@
     position: absolute
 
 // Complementos simples
-.float--right
+.float_right
     float: right !important
-.float--left
+.float_left
     float: left !important
-.float--none
+.float_none
     float: none !important
 
-.text--left
+.text_left
     text-align: left !important
-.text--center
+.text_center
     text-align: center !important
-.text--right
+.text_right
     text-align: right !important
 
-.margin--center
+.center
     margin-left: auto !important
     margin-right: auto !important
+
+.inline-block
+    display: inline-block
 
 .cf
     +cf
 
 .bb
     box-sizing: border-box
-
-.bl
-    display: block !important
-
-.pr
-    position: relative
 
 .bold
     font-weight: bold
@@ -90,11 +84,11 @@
     text-transform: uppercase !important
 
 .hand
-    cursor: pointer
+    cursor: pointer !important
 
 $verticalAligns: "middle" "top" "baseline" "bottom"
 @each $c in $verticalAligns
-    .vertical-align--#{$c}
+    .vertical-align_#{$c}
         vertical-align: #{$c}
 
 // Margins e Paddings
@@ -104,32 +98,27 @@ $verticalAligns: "middle" "top" "baseline" "bottom"
     $m: nth($c, 2)
     $padding: nth($c, 3)
     $pad: nth($c, 4)
-    @for $i from 0 through 35
-        .#{$m}-#{$i}
-            +attr-size($margin, $i, !important)
-        .#{$pad}-#{$i}
-            +attr-size($padding, $i, !important)
-        $i: $i + 5
-
-// Font size
-// Usage: <p class="fs-32">Yeahh</p>
-$fontSizes: 10 11 12 13 15 20 22 24 30
-@each $c in $fontSizes
-    .fs-#{$c}
-        +attr-size("font-size", $c, !important, em)
+    $cc: 0
+    @while $cc <= 35
+        .#{$m}-#{$cc}
+            +attr-size($margin, $cc, !important)
+        .#{$pad}-#{$cc}
+            +attr-size($padding, $cc, !important)
+        $cc: $cc + 5
 
 // Cores
 // Usage: <div class="bg-color-black txt-color-white">Yeahh</div>
 @each $c in $lista_cores
     $k: nth($c, 1)
     $v: nth($c, 2)
-    .bg-color-#{$k}
-        background-color: $v !important
-    .txt-color-#{$k}
-        color: $v !important
+    .bg-color_#{$k}
+        background-color: #{$v} !important
+    .txt-color_#{$k}
+        color: #{$v} !important
 
 // Widths
-@for $c from 5 through 100
-    .width-#{$c}
-        width: $c * 1%
-    $c: $c + 5
+$widthCC: 5
+@while $widthCC <= 100
+    .width-#{$widthCC}
+        width: #{$widthCC * 1%}
+    $widthCC: $widthCC + 5

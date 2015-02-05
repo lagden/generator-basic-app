@@ -48,7 +48,7 @@ BasicAppGenerator.prototype.askFor = function askFor() {
         name: 'jqueryVersion',
         type: 'list',
         message: 'Escolha a versão que deseja usar jQuery?',
-        choices: ['1.10.2', '2.1.0'],
+        choices: ['1.11.2', '2.1.3'],
         default: 1
     }, {
         name: 'useBower',
@@ -108,8 +108,9 @@ BasicAppGenerator.prototype.writePackage = function writePackage() {
     _package.name = this._.slugify(this.projectName);
     _package.description = this.projectDescription;
     _package.author.name = this.projectAuthor;
-    _package.scripts.install = 'volo add -skipexists' + (this.useBower ? ' && bower install' : '');
+    _package.scripts.install = 'node_modules/volo/bin/volo add -skipexists' + (this.useBower ? ' && bower install' : '');
     _package.volo.dependencies['require'] = "github:jrburke/requirejs/2.1.15";
+    _package.volo.dependencies['almond'] = "github:jrburke/almond/0.3.0";
     _package.volo.dependencies['jade'] = "https://raw.githubusercontent.com/visionmedia/jade/1.7.0/runtime.js";
     if (this.useJquery) _package.volo.dependencies['jquery'] = 'http://code.jquery.com/jquery-' + this.jqueryVersion + '.js';
     this.write('package.json', JSON.stringify(_package));

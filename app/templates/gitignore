@@ -2,8 +2,9 @@
 node_modules
 bower_components
 build/*
-dev/**/js/lib/*
-dev/**/css/*
+dev/js/*
+dev/css/*
+dev/**/*.html
 
 # Others
 cgi-bin

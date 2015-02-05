@@ -1,7 +1,7 @@
 {
   "name": "generator-basic-app",
   "version": "0.1.0",
-  "description": "A generator for Yeoman - Basic App",
+  "description": "A generator for Basic App",
   "keywords": [
       "yeoman-generator",
       "basic",
