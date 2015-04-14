@@ -20,7 +20,6 @@ module.exports = yeoman.generators.Base.extend({
     this.skipInstall = this.options['skip-install'];
     this.messages = [];
   },
-
   prompting: function() {
     var self = this;
     var done = this.async();
@@ -34,7 +33,6 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
-
   app: function() {
     // App Dev
     this.directory('dev');
@@ -63,7 +61,6 @@ module.exports = yeoman.generators.Base.extend({
     // Package
     this.copy('_package.json', 'package.json');
   },
-
   install: {
     prepara: function() {
       /*jshint expr:true */
@@ -132,12 +129,14 @@ module.exports = yeoman.generators.Base.extend({
       }
     }
   },
-
   end: function() {
     if (this.messages.length === 0) {
+      var cowsay = this.readFileAsString(path.join(__dirname, '../COWSAY'));
+
       /*jshint expr:true */
-      this.log.write().ok('You are all set now. Happy coding!');
+      this.log.write().ok(cowsay);
       /*jshint expr:false */
+
       return;
     }
     this.log.write().error('There were some errors during the process:').write();
@@ -146,5 +145,4 @@ module.exports = yeoman.generators.Base.extend({
       this.log.write((i + 1) + ' ' + m);
     }
   }
-
 });
