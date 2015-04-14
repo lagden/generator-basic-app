@@ -111,7 +111,7 @@ module.exports = yeoman.generators.Base.extend({
   },
   end: function() {
     if (this.messages.length === 0) {
-      var cowsay = this.readFileAsString(path.join(__dirname, '../COWSAY'));
+      var cowsay = this.readFileAsString(path.join(__dirname, './COWSAY'));
       /*jshint expr:true */
       this.log.write()
         .ok('Success!!!')
