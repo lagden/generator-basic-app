@@ -1,117 +1,137 @@
 'use strict';
-var util = require('util');
+
+var exec = require('child_process').exec;
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var chalk = require('chalk');
 
-var BasicAppGenerator = module.exports = function BasicAppGenerator(args, options, config) {
+var prompt = require('./prompt');
+var list = require('./list');
+
+module.exports = yeoman.generators.Base.extend({
+  constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
-    var cowsay = this.readFileAsString(path.join(__dirname, '../COWSAY'));
-    this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
-    this.on('end', function() {
-        var installProjectDependencies = !this.installProjectDependencies;
-        this.installDependencies({
-            skipInstall: installProjectDependencies,
-            skipMessage: true,
-            callback: function() {
-                console.log(cowsay);
-            }
-        });
-    });
-};
+    this.skipWelcome = true;
+    this.skipInstall = false;
+    this.messages = [];
+  },
 
-util.inherits(BasicAppGenerator, yeoman.generators.Base);
+  prompting: function() {
+    var self = this;
+    var done = this.async();
+    var promptUser = function(defaults) {
+      self.prompt(prompt.questions(defaults), function(answers) {
+        delete answers.confirmed;
+        self.prompts = answers;
+        done();
+      });
+    };
+    promptUser();
+  },
 
-BasicAppGenerator.prototype.askFor = function askFor() {
-    var cb = this.async();
-
-    var prompts = [{
-        name: 'projectName',
-        message: 'Qual o nome do projeto?',
-        default: 'Projeto'
-    }, {
-        name: 'projectDescription',
-        message: 'Qual a descrição do projeto?',
-        default: 'Apenas um projeto interessante'
-    }, {
-        name: 'projectAuthor',
-        message: 'Qual o nome do desenvolvedor do projeto?',
-        default: 'Thiago Lagden'
-    }, {
-        name: 'useJquery',
-        type: 'confirm',
-        message: 'Deseja usar jQuery?',
-        default: true
-    }, {
-        when: function(response) {
-            return response.useJquery
-        },
-        name: 'jqueryVersion',
-        type: 'list',
-        message: 'Escolha a versão que deseja usar jQuery?',
-        choices: ['1.11.2', '2.1.3'],
-        default: 1
-    }, {
-        name: 'useBower',
-        type: 'confirm',
-        message: 'Deseja também usar Bower?',
-        default: true
-    }, {
-        name: 'installProjectDependencies',
-        type: 'confirm',
-        message: 'Instalar os pacotes automaticamente?',
-        default: true
-    }];
-
-    this.prompt(prompts, function(props) {
-        this.projectName = props.projectName;
-        this.projectDescription = props.projectDescription;
-        this.projectAuthor = props.projectAuthor;
-        this.useJquery = props.useJquery;
-        this.jqueryVersion = props.jqueryVersion;
-        this.useBower = props.useBower;
-        this.installProjectDependencies = props.installProjectDependencies;
-        cb();
-    }.bind(this));
-};
-
-BasicAppGenerator.prototype.app = function app() {
+  app: function() {
     // App Dev
     this.directory('dev');
 
     // Coffee
-    this.directory('coffee','coffee');
+    this.directory('coffee');
 
     // Jade
-    this.directory('jade','jade');
+    this.directory('jade');
 
-    // SASS
-    this.copy('config.rb', 'config.rb');
-    this.directory('sass','sass');
+    // SASS + Compass
+    this.copy('config.rb');
+    this.directory('sass');
 
     // Others
-    this.copy('editorconfig'          , '.editorconfig');
-    this.copy('jshintrc'              , '.jshintrc');
-    this.copy('gitignore'             , '.gitignore');
-    this.copy('README.md'             , 'README.md');
-    this.copy('_Gruntfile.coffee'     , 'Gruntfile.coffee');
+    this.copy('README.md');
+    this.copy('editorconfig', '.editorconfig');
+    this.copy('jshintrc', '.jshintrc');
+    this.copy('gitignore', '.gitignore');
+    this.copy('_Gruntfile.coffee', 'Gruntfile.coffee');
 
     // Bower
-    if (this.useBower) {
-        this.template('_bower.json', 'bower.json');
-        this.copy('bowerrc', '.bowerrc');
-    }
-};
+    this.template('_bower.json', 'bower.json');
+    this.copy('bowerrc', '.bowerrc');
 
-BasicAppGenerator.prototype.writePackage = function writePackage() {
-    var _packageFile = path.join(__dirname, './templates/_package.json');
-    var _package = JSON.parse(this.readFileAsString(_packageFile));
-    _package.name = this._.slugify(this.projectName);
-    _package.description = this.projectDescription;
-    _package.author.name = this.projectAuthor;
-    _package.scripts.install = 'node_modules/volo/bin/volo add -skipexists' + (this.useBower ? ' && bower install' : '');
-    _package.volo.dependencies['require'] = "github:jrburke/requirejs/2.1.15";
-    _package.volo.dependencies['almond'] = "github:jrburke/almond/0.3.0";
-    _package.volo.dependencies['jade'] = "https://raw.githubusercontent.com/visionmedia/jade/1.7.0/runtime.js";
-    if (this.useJquery) _package.volo.dependencies['jquery'] = 'http://code.jquery.com/jquery-' + this.jqueryVersion + '.js';
-    this.write('package.json', JSON.stringify(_package));
-};
+    // Package
+    this.template('_package.json', 'package.json');
+  },
+
+  install: {
+    prepara: function() {
+      /*jshint expr:true */
+      this.log.info('Configuring package.json');
+      /*jshint expr:false */
+
+      var filepath = path.join(this.destinationRoot(), 'package.json');
+      var pkg = JSON.parse(this.readFileAsString(filepath));
+
+      pkg.name = (this.prompts.projectName)
+        .replace(/[^0-9a-z_\-]/ig, '-')
+        .replace(/-+/g, '-');
+      pkg.version = '0.1.0';
+      pkg.description = this.prompts.projectDescription;
+      pkg.author.name = this.prompts.projectAuthor;
+      pkg.main = 'dev/index.html';
+
+      this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
+    },
+    npm: function() {
+
+      var log = this.log;
+      var done = this.async();
+      var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
+      var dir = path.join(this.destinationRoot());
+      var cmd = [
+        bin + ' add -skipexists jrburke/requirejs',
+        bin + ' add -skipexists jrburke/almond',
+        bin + ' add -skipexists jadejs/jade'
+      ];
+
+      if (this.prompts.useJquery) {
+        cmd.push(bin + ' add -skipexists jquery/jquery')
+      }
+
+      /*jshint expr:true */
+      log.write()
+        .info('Running ' + chalk.yellow('npm install') + ' ' +
+          'to install the required dependencies. ' +
+          'If this fails, try running the command yourself.')
+        .info(chalk.yellow('This might take a few moments'))
+        .write();
+      /*jshint expr:false */
+      this.npmInstall(list.packages(), {
+        'saveDev': true
+      }, function() {
+        /*jshint expr:true */
+        log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
+        /*jshint expr:false */
+
+        exec(cmd.join(' && '), {
+          cwd: dir
+        }, function(err, stdout) {
+          /*jshint expr:true */
+          log && log.write().info(stdout);
+          /*jshint expr:false */
+          done();
+        });
+      });
+    }
+  },
+
+  end: function() {
+    if (this.messages.length === 0) {
+      /*jshint expr:true */
+      this.log.write().ok('You are all set now. Happy coding!');
+      /*jshint expr:false */
+      return;
+    }
+    this.log.write().error('There were some errors during the process:').write();
+    for (var i = 0, m;
+      (m = this.messages[i]); i++) {
+      this.log.write((i + 1) + ' ' + m);
+    }
+  }
+
+});

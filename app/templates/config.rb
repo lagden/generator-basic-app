@@ -2,7 +2,6 @@ require "sass"
 require "compass/import-once/activate"
 
 # Section: Default Properties
-# ---------------------------
 project_type = :stand_alone
 relative_assets = true
 disable_warnings = false
