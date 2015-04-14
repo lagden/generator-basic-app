@@ -8,7 +8,7 @@ define [
   $ = (el) -> d.querySelector el
 
   $info = $('#info')
-  $info.insertAdjacentHTML 'afterbegin' template
+  $info.insertAdjacentHTML 'afterbegin', template
     name: navigator.appName
     version: navigator.appVersion
 

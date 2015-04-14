@@ -23,6 +23,6 @@ function packages() {
   ];
 }
 
-module.export = {
+module.exports = {
   'packages': packages
 }

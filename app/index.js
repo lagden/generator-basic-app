@@ -11,40 +11,25 @@ var list = require('./list');
 module.exports = yeoman.generators.Base.extend({
   constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
-
-    this.option('skip-welcome-message', {
-      desc: 'Skip welcome message',
-      type: Boolean,
-      defaults: true
-    });
-    this.skipWelcome = this.options['skip-welcome-message'];
-
-    // this.option('skip-install', {
-    //   desc: 'Do not install dependencies',
-    //   type: Boolean,
-    //   defaults: false
-    // });
-    // this.skipInstall = this.options['skip-install'];
+    this.skipWelcome = true;
+    this.skipInstall = false;
+    this.messages = [];
   },
 
-  askFor: function() {
-    var self = this,
-      done = this.async();
-
+  prompting: function() {
+    var self = this;
+    var done = this.async();
     var promptUser = function(defaults) {
       self.prompt(prompt.questions(defaults), function(answers) {
+        delete answers.confirmed;
         self.prompts = answers;
         done();
       });
     };
-
     promptUser();
   },
 
-  configuring: function() {
-    var self = this,
-      done = this.async();
-
+  app: function() {
     // App Dev
     this.directory('dev');
 
@@ -68,61 +53,69 @@ module.exports = yeoman.generators.Base.extend({
     // Bower
     this.template('_bower.json', 'bower.json');
     this.copy('bowerrc', '.bowerrc');
-  },
 
-  packagejson: function() {
-    /*jshint expr:true */
-    this.log.info('Configuring package.json');
-    /*jshint expr:false */
-
-    var filepath = path.join(this.destinationRoot(), 'package.json'),
-      pkg = JSON.parse(this.readFileAsString(filepath));
-
-    pkg.name = (this.prompts.projectName)
-      .replace(/[^0-9a-z_\-]/ig, '-')
-      .replace(/-+/g, '-');
-    pkg.version = '0.1.0';
-    pkg.description = this.prompts.projectDescription;
-    pkg.author.name = this.prompts.projectAuthor;
-    pkg.main = 'dev/index.html';
-
-    this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
+    // Package
+    this.template('_package.json', 'package.json');
   },
 
   install: {
-    npm: function() {
+    prepara: function() {
       /*jshint expr:true */
-      this.log.write()
+      this.log.info('Configuring package.json');
+      /*jshint expr:false */
+
+      var filepath = path.join(this.destinationRoot(), 'package.json');
+      var pkg = JSON.parse(this.readFileAsString(filepath));
+
+      pkg.name = (this.prompts.projectName)
+        .replace(/[^0-9a-z_\-]/ig, '-')
+        .replace(/-+/g, '-');
+      pkg.version = '0.1.0';
+      pkg.description = this.prompts.projectDescription;
+      pkg.author.name = this.prompts.projectAuthor;
+      pkg.main = 'dev/index.html';
+
+      this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
+    },
+    npm: function() {
+
+      var log = this.log;
+      var done = this.async();
+      var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
+      var dir = path.join(this.destinationRoot());
+      var cmd = [
+        bin + ' add -skipexists jrburke/requirejs',
+        bin + ' add -skipexists jrburke/almond',
+        bin + ' add -skipexists jadejs/jade'
+      ];
+
+      if (this.prompts.useJquery) {
+        cmd.push(bin + ' add -skipexists jquery/jquery')
+      }
+
+      /*jshint expr:true */
+      log.write()
         .info('Running ' + chalk.yellow('npm install') + ' ' +
           'to install the required dependencies. ' +
           'If this fails, try running the command yourself.')
         .info(chalk.yellow('This might take a few moments'))
         .write();
       /*jshint expr:false */
-      this.npmInstall(list.packages, {
+      this.npmInstall(list.packages(), {
         'saveDev': true
-      });
-    },
-
-    volo: function() {
-      var log = this.log;
-      var done = this.async();
-      var cmd = [
-        'node_modules/volo/bin/volo add -skipexists -amd almond',
-        'node_modules/volo/bin/volo add -skipexists -amd jade'
-      ];
-
-      if (this.prompts.useJquery) {
-        cmd.push('node_modules/volo/bin/volo add -skipexists -amd jquery')
-      }
-
-      exec(cmd.join(' && '), {
-        cwd: path.join('./')
-      }, function(err, stdout) {
+      }, function() {
         /*jshint expr:true */
-        log && log.write().info(stdout);
+        log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
         /*jshint expr:false */
-        done();
+
+        exec(cmd.join(' && '), {
+          cwd: dir
+        }, function(err, stdout) {
+          /*jshint expr:true */
+          log && log.write().info(stdout);
+          /*jshint expr:false */
+          done();
+        });
       });
     }
   },
@@ -134,12 +127,11 @@ module.exports = yeoman.generators.Base.extend({
       /*jshint expr:false */
       return;
     }
-
     this.log.write().error('There were some errors during the process:').write();
-
     for (var i = 0, m;
       (m = this.messages[i]); i++) {
       this.log.write((i + 1) + ' ' + m);
     }
   }
+
 });

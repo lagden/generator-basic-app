@@ -1,6 +1,6 @@
 {
   "name": "generator-basic-app",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Scaffold to basic application",
   "license": "BSD",
   "keywords": [
@@ -28,7 +28,7 @@
     "app"
   ],
   "dependencies": {
-    "yeoman-generator": "^0.17.3",
+    "yeoman-generator": "^0.18.8",
     "chalk": "^1.0.0"
   },
   "devDependencies": {

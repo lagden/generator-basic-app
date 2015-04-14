@@ -22,6 +22,6 @@ function questions(defaults) {
   }];
 }
 
-module.export = {
+module.exports = {
   'questions': questions
 }
