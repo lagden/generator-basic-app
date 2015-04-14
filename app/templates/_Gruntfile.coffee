@@ -8,7 +8,6 @@ module.exports = (grunt) ->
   grunt.file.defaultEncoding = 'utf8'
 
   grunt.initConfig
-    pkg: grunt.file.readJSON "package.json"
 
     project:
       prod:   'build'
@@ -18,9 +17,6 @@ module.exports = (grunt) ->
       jade:   'jade'
       sass:   'sass'
 
-    coffeelint:
-      files: ['<%= project.coffee %>/{,*/}*.coffee']
-
     coffee:
       compile:
         options:
@@ -29,7 +25,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: false
           cwd: '<%= project.coffee %>'
-          src: ['{,*/}*.coffee']
+          src: ['**/*.coffee']
           dest: '<%= project.tmp %>/js'
           ext: '.js'
         ]
@@ -136,9 +132,6 @@ module.exports = (grunt) ->
         files: ['<%= project.jade %>/js/{,*/}*.jade']
         tasks: ['jade:js']
 
-    clean:
-      dist: ['<%= project.prod %>']
-
     browserSync:
       dev:
         bsFiles:
@@ -231,12 +224,16 @@ module.exports = (grunt) ->
         'jade:html'
       ]
 
+    clean:
+      dist: ['<%= project.prod %>']
+      tmp:  ['<%= project.tmp %>']
+
   grunt.registerTask 'default', [
+    'clean:tmp'
     'concurrent:dev'
   ]
 
   grunt.registerTask 'scripts', [
-    'coffeelint'
     'coffee'
     'fixmyjs:fix'
   ]
@@ -247,7 +244,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'build', [
-    'clean'
+    'clean:dist'
     'default'
     'jade:build'
     'requirejs'

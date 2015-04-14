@@ -1,16 +1,16 @@
 .sass-cache
 node_modules
-bower_components
-build/*
 dev/js/*
 dev/css/*
 dev/**/*.html
+tmp/*
+build/*
 
 # Others
 cgi-bin
 error_log
-.DS_Store
 thumbs.db
+.DS_Store
 .*.swp
 *.tmproj
 *.mwb

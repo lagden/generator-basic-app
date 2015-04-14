@@ -2,12 +2,13 @@
 
 define [
   'templates/sample'
-  'jquery'
-], (template, $) ->
+], (template) ->
 
+  d = document;
+  $ = (el) -> d.querySelector el
 
   $info = $('#info')
-  $info.append template
+  $info.insertAdjacentHTML 'afterbegin' template
     name: navigator.appName
     version: navigator.appVersion
 
