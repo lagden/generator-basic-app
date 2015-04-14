@@ -84,9 +84,11 @@ module.exports = yeoman.generators.Base.extend({
       this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
     },
     npm: function() {
-      if (this.skipInstall !== false) {
-        var log = this.log;
-        var done = this.async();
+      var log = this.log;
+      var done = this.async();
+
+      if (this.skipInstall === false) {
+
         var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
         var dir = path.join(this.destinationRoot());
         var cmd = [
@@ -107,9 +109,11 @@ module.exports = yeoman.generators.Base.extend({
           .info(chalk.yellow('This might take a few moments'))
           .write();
         /*jshint expr:false */
+
         this.npmInstall(list.packages(), {
           'saveDev': true
         }, function() {
+
           /*jshint expr:true */
           log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
           /*jshint expr:false */
@@ -123,6 +127,8 @@ module.exports = yeoman.generators.Base.extend({
             done();
           });
         });
+      } else {
+        done();
       }
     }
   },

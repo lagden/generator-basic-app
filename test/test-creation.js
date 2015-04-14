@@ -1,18 +1,13 @@
-/*global describe, beforeEach, it*/
+/*global describe, before, it*/
 'use strict';
 
-var path    = require('path');
+var path = require('path');
 var helpers = require('yeoman-generator').test;
-var assert  = require('yeoman-generator').assert;
+var assert = require('yeoman-generator').assert;
 
 describe('yo basic-app', function() {
 
-  it('can be imported without blowing up', function() {
-    var app = require('../app');
-    assert(app !== undefined);
-  });
-
-  before(function (done) {
+  before(function(done) {
     helpers.run(path.join(__dirname, '../app'))
       .inDir(path.join(__dirname, './tmp'))
       .withArguments(['--skip-install'])
@@ -25,7 +20,12 @@ describe('yo basic-app', function() {
       .on('end', done);
   });
 
-  it('creates expected files', function () {
+  it('can be imported without blowing up', function() {
+    var app = require('../app');
+    assert(app !== undefined);
+  });
+
+  it('creates expected files', function() {
     var expected = [
       'package.json',
       'bower.json',
