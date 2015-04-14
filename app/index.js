@@ -12,21 +12,27 @@ module.exports = yeoman.generators.Base.extend({
   constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
     this.skipWelcome = true;
-    this.skipInstall = false;
+    this.option('skip-install', {
+      desc: 'Do not install dependencies',
+      type: Boolean,
+      defaults: false
+    });
+    this.skipInstall = this.options['skip-install'];
     this.messages = [];
   },
 
   prompting: function() {
     var self = this;
     var done = this.async();
-    var promptUser = function(defaults) {
-      self.prompt(prompt.questions(defaults), function(answers) {
-        delete answers.confirmed;
-        self.prompts = answers;
-        done();
+    var questions = prompt.questions();
+
+    this.prompt(questions, function(answers) {
+      var prop = Object.getOwnPropertyNames(answers);
+      prop.forEach(function(name) {
+        self[name] = answers[name];
       });
-    };
-    promptUser();
+      done();
+    });
   },
 
   app: function() {
@@ -55,7 +61,7 @@ module.exports = yeoman.generators.Base.extend({
     this.copy('bowerrc', '.bowerrc');
 
     // Package
-    this.template('_package.json', 'package.json');
+    this.copy('_package.json', 'package.json');
   },
 
   install: {
@@ -67,56 +73,57 @@ module.exports = yeoman.generators.Base.extend({
       var filepath = path.join(this.destinationRoot(), 'package.json');
       var pkg = JSON.parse(this.readFileAsString(filepath));
 
-      pkg.name = (this.prompts.projectName)
+      pkg.name = (this.projectName)
         .replace(/[^0-9a-z_\-]/ig, '-')
         .replace(/-+/g, '-');
       pkg.version = '0.1.0';
-      pkg.description = this.prompts.projectDescription;
-      pkg.author.name = this.prompts.projectAuthor;
+      pkg.description = this.projectDescription;
+      pkg.author.name = this.projectAuthor;
       pkg.main = 'dev/index.html';
 
       this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
     },
     npm: function() {
+      if (this.skipInstall !== false) {
+        var log = this.log;
+        var done = this.async();
+        var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
+        var dir = path.join(this.destinationRoot());
+        var cmd = [
+          bin + ' add -skipexists jrburke/requirejs',
+          bin + ' add -skipexists jrburke/almond',
+          bin + ' add -skipexists jadejs/jade'
+        ];
 
-      var log = this.log;
-      var done = this.async();
-      var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
-      var dir = path.join(this.destinationRoot());
-      var cmd = [
-        bin + ' add -skipexists jrburke/requirejs',
-        bin + ' add -skipexists jrburke/almond',
-        bin + ' add -skipexists jadejs/jade'
-      ];
+        if (this.useJquery) {
+          cmd.push(bin + ' add -skipexists jquery/jquery')
+        }
 
-      if (this.prompts.useJquery) {
-        cmd.push(bin + ' add -skipexists jquery/jquery')
-      }
-
-      /*jshint expr:true */
-      log.write()
-        .info('Running ' + chalk.yellow('npm install') + ' ' +
-          'to install the required dependencies. ' +
-          'If this fails, try running the command yourself.')
-        .info(chalk.yellow('This might take a few moments'))
-        .write();
-      /*jshint expr:false */
-      this.npmInstall(list.packages(), {
-        'saveDev': true
-      }, function() {
         /*jshint expr:true */
-        log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
+        log.write()
+          .info('Running ' + chalk.yellow('npm install') + ' ' +
+            'to install the required dependencies. ' +
+            'If this fails, try running the command yourself.')
+          .info(chalk.yellow('This might take a few moments'))
+          .write();
         /*jshint expr:false */
-
-        exec(cmd.join(' && '), {
-          cwd: dir
-        }, function(err, stdout) {
+        this.npmInstall(list.packages(), {
+          'saveDev': true
+        }, function() {
           /*jshint expr:true */
-          log && log.write().info(stdout);
+          log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
           /*jshint expr:false */
-          done();
+
+          exec(cmd.join(' && '), {
+            cwd: dir
+          }, function(err, stdout) {
+            /*jshint expr:true */
+            log && log.write().info(stdout);
+            /*jshint expr:false */
+            done();
+          });
         });
-      });
+      }
     }
   },
 

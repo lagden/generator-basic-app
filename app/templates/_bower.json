@@ -1,5 +1,5 @@
 {
-    "name": "<%= _.slugify(prompts.projectName) %>",
+    "name": "<%= _.slugify(projectName) %>",
     "version": "0.0.1",
     "dependencies": {}
 }
