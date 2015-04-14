@@ -1,6 +1,5 @@
 'use strict';
 
-var exec = require('child_process').exec;
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
@@ -70,73 +69,54 @@ module.exports = yeoman.generators.Base.extend({
       var filepath = path.join(this.destinationRoot(), 'package.json');
       var pkg = JSON.parse(this.readFileAsString(filepath));
 
-      pkg.name = (this.projectName)
-        .replace(/[^0-9a-z_\-]/ig, '-')
-        .replace(/-+/g, '-');
+      pkg.name = this._.slugify(this.projectName);
       pkg.version = '0.1.0';
       pkg.description = this.projectDescription;
       pkg.author.name = this.projectAuthor;
       pkg.main = 'dev/index.html';
+      pkg.scripts.install = 'node_modules/volo/bin/volo add -skipexists';
+      pkg.volo.dependencies.require = 'jrburke/requirejs';
+      pkg.volo.dependencies.almond = 'jrburke/almond';
+      pkg.volo.dependencies.jade = 'jadejs/jade';
+      if (this.useJquery) {
+        pkg.volo.dependencies.jquery = 'jquery/jquery';
+      }
 
       this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
     },
     npm: function() {
-      var log = this.log;
-      var done = this.async();
+      var self = this;
+      var done;
 
       if (this.skipInstall === false) {
-
-        var bin = path.join(this.destinationRoot(), 'node_modules/volo/bin/volo');
-        var dir = path.join(this.destinationRoot());
-        var cmd = [
-          bin + ' add -skipexists jrburke/requirejs',
-          bin + ' add -skipexists jrburke/almond',
-          bin + ' add -skipexists jadejs/jade'
-        ];
-
-        if (this.useJquery) {
-          cmd.push(bin + ' add -skipexists jquery/jquery')
-        }
+        done = this.async();
 
         /*jshint expr:true */
-        log.write()
+        this.log.write()
           .info('Running ' + chalk.yellow('npm install') + ' ' +
-            'to install the required dependencies. ' +
-            'If this fails, try running the command yourself.')
+            'to install the required dependencies. ')
           .info(chalk.yellow('This might take a few moments'))
           .write();
         /*jshint expr:false */
 
-        this.npmInstall(list.packages(), {
-          'saveDev': true
-        }, function() {
+        var args = list.packages();
+        args.unshift('i');
+        args.push('--save-dev');
 
-          /*jshint expr:true */
-          log.info('Install ' + chalk.yellow('Volo') + ' required dependencies.');
-          /*jshint expr:false */
-
-          exec(cmd.join(' && '), {
-            cwd: dir
-          }, function(err, stdout) {
-            /*jshint expr:true */
-            log && log.write().info(stdout);
-            /*jshint expr:false */
-            done();
-          });
+        this.spawnCommand('npm', args).on('close', function() {
+          self.spawnCommand('npm', ['run-script', 'install']).on('close', done);
         });
-      } else {
-        done();
       }
-    }
+    },
   },
   end: function() {
     if (this.messages.length === 0) {
       var cowsay = this.readFileAsString(path.join(__dirname, '../COWSAY'));
-
       /*jshint expr:true */
-      this.log.write().ok(cowsay);
+      this.log.write()
+        .ok('Success!!!')
+        .info(chalk.red(cowsay));
       /*jshint expr:false */
-
       return;
     }
     this.log.write().error('There were some errors during the process:').write();

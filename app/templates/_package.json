@@ -12,5 +12,6 @@
   "volo": {
     "baseUrl": "dev/js/lib",
     "dependencies": {}
-  }
+  },
+  "devDependencies": {}
 }
