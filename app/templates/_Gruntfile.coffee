@@ -39,7 +39,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: false
           cwd: '<%= project.tmp %>/js'
-          src: ['{,*/}*.js']
+          src: ['**/*.js']
           dest: '<%= project.dev %>/js'
           ext: '.js'
         ]
@@ -54,7 +54,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: true
           cwd: '<%= project.jade %>/js'
-          src: ['{,*/}*.jade']
+          src: ['**/*.jade']
           dest: '<%= project.dev %>/js/templates'
           ext: '.js'
         ]
@@ -66,7 +66,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: false
           cwd: '<%= project.jade %>/html'
-          src: ['{,*/}*.jade']
+          src: ['**/*.jade']
           dest: '<%= project.dev %>'
           ext: '.html'
         ]
@@ -80,7 +80,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: false
           cwd: '<%= project.jade %>/html'
-          src: ['{,*/}*.jade']
+          src: ['**/*.jade']
           dest: '<%= project.dev %>'
           ext: '.html'
         ]
@@ -117,7 +117,7 @@ module.exports = (grunt) ->
 
     watch:
       script:
-        files: ['<%= project.coffee %>/{,*/}*.coffee']
+        files: ['<%= project.coffee %>/**/*.coffee']
         tasks: ['scripts']
 
       sass:
@@ -125,11 +125,11 @@ module.exports = (grunt) ->
         tasks: ['styles']
 
       jadeToHtml:
-        files: ['<%= project.jade %>/html/{,*/}*.jade']
+        files: ['<%= project.jade %>/html/**/*.jade']
         tasks: ['jade:html']
 
       jadeToJs:
-        files: ['<%= project.jade %>/js/{,*/}*.jade']
+        files: ['<%= project.jade %>/js/**/*.jade']
         tasks: ['jade:js']
 
     browserSync:
@@ -184,7 +184,7 @@ module.exports = (grunt) ->
           expand: true
           flatten: false
           cwd: '<%= project.dev %>/css'
-          src: ['{,*/}*.css']
+          src: ['**/*.css']
           dest: '<%= project.prod %>/css'
           ext: '.css'
         ]
@@ -196,7 +196,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: '<%= project.dev %>/images'
-          src: ['{,*/}*.{png,jpg,gif}']
+          src: ['**/*.{png,jpg,gif}']
           dest: '<%= project.prod %>/images'
         ]
 
@@ -212,7 +212,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: '<%= project.dev %>'
-          src: ['{,*/}*.html']
+          src: ['**/*.html']
           dest: '<%= project.prod %>'
         ]
 
