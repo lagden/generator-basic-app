@@ -189,17 +189,6 @@ module.exports = (grunt) ->
           ext: '.css'
         ]
 
-    imagemin:
-      dynamic:
-        options:
-          optimizationLevel: 3
-        files: [
-          expand: true
-          cwd: '<%= project.dev %>/images'
-          src: ['**/*.{png,jpg,gif}']
-          dest: '<%= project.prod %>/images'
-        ]
-
     minifyHtml:
       dynamic:
         options:
@@ -249,17 +238,16 @@ module.exports = (grunt) ->
     'jade:build'
     'requirejs'
     'cssmin'
-    'imagemin'
     'minifyHtml'
   ]
 
-  grunt.registerTask 'server', [
+  grunt.registerTask 'serve', [
     'default'
     'browserSync:dev'
     'watch'
   ]
 
-  grunt.registerTask 'server:prod', [
+  grunt.registerTask 'serve:prod', [
     'build'
     'browserSync:dist'
   ]
