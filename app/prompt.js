@@ -14,11 +14,25 @@ function questions(defaults) {
     name: 'projectAuthor',
     message: 'Qual o nome do desenvolvedor do projeto?',
     default: defaults.projectAuthor || 'Thiago Lagden'
-  },{
+  }, {
+    name: 'whichPP',
+    type: 'list',
+    message: 'Escolha o pré-processador de css?',
+    choices: ['sass', 'stylus'],
+    default: 1
+  }, {
+    when: function(response) {
+      return (response.whichPP === 'sass') ? true : false;
+    },
+    name: 'useCompass',
+    type: 'confirm',
+    message: 'Deseja usar o Compass?',
+    default: false
+  }, {
     name: 'useJquery',
     type: 'confirm',
     message: 'Deseja usar jQuery?',
-    default: true
+    default: false
   }];
 }
 

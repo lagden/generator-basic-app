@@ -1,0 +1,30 @@
+// Clearfix
+=cf
+  &:after
+    content: ""
+    display: table
+    clear: both
+
+// Fonts
+=monospace($prepend: null)
+  $list: Consolas, "Liberation Mono", Courier, monospace
+  font-family: join($prepend, $list, comma)
+
+=sansSerif($prepend: null)
+  $list: "Helvetica Neue", Helvetica, sans-serif
+  font-family: join($prepend, $list, comma)
+
+=serif($prepend: null)
+  $list: "Times New Roman", Times, serif
+  font-family: join($prepend, $list, comma)
+
+// Retina
+=retina()
+  @media only screen
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: dpi2dppx(192dpi))
+      @content
+
+// Animation
+=keyframes($name)
+  @keyframes #{$name}
+    @content

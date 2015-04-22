@@ -1,23 +1,24 @@
 require "sass"
 require "compass/import-once/activate"
 
-# Section: Default Properties
+# Default Properties
 project_type = :stand_alone
 relative_assets = true
 disable_warnings = false
-preferred_syntax = :sass
 line_comments = true
+preferred_syntax = :sass
+
+# Paths
+project_path = "dev"
+css_path = "#{project_path}/css"
+images_path = "#{project_path}/images"
+sass_path = "sass"
 
 # Directories
 css_dir = "css"
 images_dir = "images"
+sass_dir = "../sass"
 
-# Paths
-project_path = "dev"
-css_path = "#{project_path}/#{css_dir}"
-css_dir = "#{project_path}/#{images_dir}"
-
-# Http Paths
+# Http
 http_path = "/"
-http_stylesheets_dir = "css"
-http_images_dir = "images"
+http_generated_images_path = "../images"

@@ -3,9 +3,11 @@
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
+var js2coffee = require('js2coffee');
 
 var prompt = require('./prompt');
 var list = require('./list');
+var gruntConfig = require('./grunt');
 
 module.exports = yeoman.generators.Base.extend({
   constructor: function() {
@@ -42,16 +44,18 @@ module.exports = yeoman.generators.Base.extend({
     // Jade
     this.directory('jade');
 
-    // SASS + Compass
-    this.copy('config.rb');
-    this.directory('sass');
+    // Stylus or Sass + Compass
+    this.directory(this.whichPP);
+    if (this.useCompass) {
+      this.copy('config.rb');
+    }
 
     // Others
     this.copy('README.md');
     this.copy('editorconfig', '.editorconfig');
     this.copy('jshintrc', '.jshintrc');
     this.copy('gitignore', '.gitignore');
-    this.copy('_Gruntfile.coffee', 'Gruntfile.coffee');
+    this.copy('_Gruntfile.js', 'Gruntfile.js');
 
     // Bower
     this.template('_bower.json', 'bower.json');
@@ -59,6 +63,21 @@ module.exports = yeoman.generators.Base.extend({
 
     // Package
     this.copy('_package.json', 'package.json');
+  },
+  writing: {
+    prepara: function() {
+      this.gruntfile.insertConfig('project', gruntConfig.folders(this.whichPP));
+      this.gruntfile.insertConfig(this.whichPP, gruntConfig[this.whichPP]());
+      this.gruntfile.registerTask('styles', [this.whichPP, 'autoprefixer']);
+    },
+    coffee: function() {
+      try {
+        var fileCoffee = path.join(this.destinationRoot(), 'Gruntfile.coffee');
+        this.writeFileFromString(js2coffee.build(this.gruntfile.toString()).code, fileCoffee);
+      } catch (e) {
+        this.log.write().error('js2coffee: ' + e.message).write();
+      }
+    }
   },
   install: {
     prepara: function() {
@@ -99,7 +118,7 @@ module.exports = yeoman.generators.Base.extend({
           .write();
         /*jshint expr:false */
 
-        var args = list.packages();
+        var args = list.packages(this.whichPP);
         args.unshift('i');
         args.push('--save-dev');
 
@@ -109,20 +128,30 @@ module.exports = yeoman.generators.Base.extend({
       }
     },
   },
-  end: function() {
-    if (this.messages.length === 0) {
-      var cowsay = this.readFileAsString(path.join(__dirname, './COWSAY'));
-      /*jshint expr:true */
-      this.log.write()
-        .ok('Success!!!')
-        .info(chalk.red(cowsay));
-      /*jshint expr:false */
-      return;
-    }
-    this.log.write().error('There were some errors during the process:').write();
-    for (var i = 0, m;
-      (m = this.messages[i]); i++) {
-      this.log.write((i + 1) + ' ' + m);
+  end: {
+    cleanup: function() {
+      var fileCoffee = path.join(this.destinationRoot(), 'Gruntfile.coffee');
+      var fileJs = path.join(this.destinationRoot(), 'Gruntfile.js');
+      if (this.fs.exists(fileCoffee)) {
+        this.conflicter.force = true;
+        this.fs.delete(fileJs);
+      }
+    },
+    msg: function() {
+      if (this.messages.length === 0) {
+        var cowsay = this.readFileAsString(path.join(__dirname, './COWSAY'));
+        /*jshint expr:true */
+        this.log.write()
+          .ok('Success!!!')
+          .info(chalk.red(cowsay));
+        /*jshint expr:false */
+        return;
+      }
+      this.log.write().error('There were some errors during the process:').write();
+      for (var i = 0, m;
+        (m = this.messages[i]); i++) {
+        this.log.write((i + 1) + ' ' + m);
+      }
     }
   }
 });

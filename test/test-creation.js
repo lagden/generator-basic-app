@@ -15,7 +15,8 @@ describe('yo basic-app', function() {
         projectName: 'Teste',
         projectDescription: 'Executando o teste',
         projectAuthor: 'Mocha',
-        useJquery: false
+        useJquery: false,
+        whichPP: 'stylus'
       })
       .on('end', done);
   });
@@ -34,7 +35,6 @@ describe('yo basic-app', function() {
       '.gitignore',
       '.jshintrc',
       'Gruntfile.coffee',
-      'config.rb',
       'README.md',
       'coffee/config.coffee',
       'coffee/main.coffee',
@@ -42,7 +42,7 @@ describe('yo basic-app', function() {
       'dev/favicon.ico',
       'jade/html/index.jade',
       'jade/js/sample.jade',
-      'sass/app.sass'
+      'stylus/app.styl'
     ];
 
     assert.file(expected);

@@ -1,6 +1,6 @@
 'use strict';
 
-function packages() {
+function packages(pp) {
   return [
     'grunt',
     'grunt-autoprefixer',
@@ -8,10 +8,11 @@ function packages() {
     'grunt-concurrent',
     'grunt-contrib-clean',
     'grunt-contrib-coffee',
+    'grunt-contrib-copy',
     'grunt-contrib-cssmin',
     'grunt-contrib-jade',
     'grunt-contrib-requirejs',
-    'grunt-contrib-stylus',
+    'grunt-contrib-' + pp,
     'grunt-contrib-watch',
     'grunt-fixmyjs',
     'grunt-minify-html',
