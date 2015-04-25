@@ -1,7 +1,30 @@
-Basic Awesome APP
-=================
+Basic APP
+=========
 
 Making a better and awesome web!!!
+
+## Requirement
+
+If you are using Sass as your preprocessors, you must install [libsass](http://libsass.org/) before.
+Why?! Because is more fast than Ruby version
+
+## Install
+
+Run `npm i`
+
+### Sass
+
+If it's necessary!
+
+If you are using `OSX`, you can install `libsass` using [Homebrew](http://brew.sh/):
+
+    brew update
+    brew install libsass
+    brew install sassc
+
+## Usage
+
+`grunt serve`
 
 ## Credit
 

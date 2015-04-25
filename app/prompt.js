@@ -21,14 +21,6 @@ function questions(defaults) {
     choices: ['sass', 'stylus'],
     default: 1
   }, {
-    when: function(response) {
-      return (response.whichPP === 'sass') ? true : false;
-    },
-    name: 'useCompass',
-    type: 'confirm',
-    message: 'Deseja usar o Compass?',
-    default: false
-  }, {
     name: 'useJquery',
     type: 'confirm',
     message: 'Deseja usar jQuery?',
@@ -38,4 +30,4 @@ function questions(defaults) {
 
 module.exports = {
   'questions': questions
-}
+};

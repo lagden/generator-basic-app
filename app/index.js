@@ -46,9 +46,6 @@ module.exports = yeoman.generators.Base.extend({
 
     // Stylus or Sass + Compass
     this.directory(this.whichPP);
-    if (this.useCompass) {
-      this.copy('config.rb');
-    }
 
     // Others
     this.copy('README.md');

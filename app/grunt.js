@@ -2,13 +2,13 @@
 
 function folders(pp) {
   var project = {
-    prod: 'build',
-    dev: 'dev',
-    tmp: 'tmp',
-    coffee: 'coffee',
-    jade: 'jade',
-    pre: pp
-  }
+    prod   : 'build',
+    dev    : 'dev',
+    tmp    : 'tmp',
+    coffee : 'coffee',
+    jade   : 'jade',
+    pre    : pp
+  };
   return JSON.stringify(project);
 }
 
@@ -16,21 +16,18 @@ function sass() {
   var sass = {
     dev: {
       options: {
-        style: 'expanded',
-        compass: true,
-        noCache: true,
-        update: false,
-        unixNewlines: true,
-        trace: true,
-        sourcemap: 'none'
+        outputStyle  : 'expanded',
+        precision    : 5,
+        sourcemap    : 'none',
+        includePaths : []
       },
       files: [{
-        expand: true,
-        flatten: false,
-        cwd: '<%= project.pre %>',
-        src: ['*.sass'],
-        dest: '<%= project.tmp %>/css',
-        ext: '.css'
+        expand  : true,
+        flatten : false,
+        cwd     : '<%= project.pre %>',
+        src     : ['*.sass'],
+        dest    : '<%= project.tmp %>/css',
+        ext     : '.css'
       }]
     }
   };
@@ -44,20 +41,20 @@ function stylus() {
         compress: false
       },
       files: [{
-        expand: true,
-        flatten: false,
-        cwd: '<%= project.pre %>',
-        src: ['*.styl'],
-        dest: '<%= project.tmp %>/css',
-        ext: '.css'
+        expand  : true,
+        flatten : false,
+        cwd     : '<%= project.pre %>',
+        src     : ['*.styl'],
+        dest    : '<%= project.tmp %>/css',
+        ext     : '.css'
       }]
     }
-  }
+  };
   return JSON.stringify(stylus);
 }
 
 module.exports = {
-  'sass': sass,
-  'stylus': stylus,
-  'folders': folders
+  'sass'    : sass,
+  'stylus'  : stylus,
+  'folders' : folders
 };
