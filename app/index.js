@@ -1,9 +1,7 @@
 'use strict';
 
-var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-var js2coffee = require('js2coffee');
 
 var prompt = require('./prompt');
 var list = require('./list');
@@ -62,35 +60,24 @@ module.exports = yeoman.generators.Base.extend({
     this.copy('_package.json', 'package.json');
   },
   writing: {
-    prepara: function() {
+    grunt: function() {
       this.gruntfile.insertConfig('project', gruntConfig.folders(this.whichPP));
       this.gruntfile.insertConfig(this.whichPP, gruntConfig[this.whichPP]());
       this.gruntfile.registerTask('styles', [this.whichPP, 'autoprefixer']);
     },
-    coffee: function() {
-      try {
-        var fileCoffee = path.join(this.destinationRoot(), 'Gruntfile.coffee');
-        this.writeFileFromString(js2coffee.build(this.gruntfile.toString()).code, fileCoffee);
-      } catch (e) {
-        this.log.write().error('js2coffee: ' + e.message).write();
-      }
-    }
-  },
-  install: {
-    prepara: function() {
-      /*jshint expr:true */
-      this.log.info('Configuring package.json');
-      /*jshint expr:false */
+    package: function() {
+      this.log
+        .info('Configuring package.json');
 
-      var filepath = path.join(this.destinationRoot(), 'package.json');
-      var pkg = JSON.parse(this.readFileAsString(filepath));
+      var filepath = this.destinationPath('package.json')
+      var pkg = JSON.parse(this.read(filepath));
 
       pkg.name = this._.slugify(this.projectName);
       pkg.version = '0.1.0';
       pkg.description = this.projectDescription;
       pkg.author.name = this.projectAuthor;
-      pkg.main = 'dev/index.html';
-      pkg.scripts.install = 'node_modules/volo/bin/volo add -skipexists';
+      pkg.scripts.postinstall = 'volo add -skipexists';
+      pkg.scripts.start = 'http-server dev -o -a127.0.0.1 -p8285';
       pkg.volo.dependencies.require = 'jrburke/requirejs';
       pkg.volo.dependencies.almond = 'jrburke/almond';
       pkg.volo.dependencies.jade = 'jadejs/jade';
@@ -98,8 +85,10 @@ module.exports = yeoman.generators.Base.extend({
         pkg.volo.dependencies.jquery = 'jquery/jquery';
       }
 
-      this.writeFileFromString(JSON.stringify(pkg, null, 2), filepath);
+      this.write(filepath, JSON.stringify(pkg, null, 2));
     },
+  },
+  install: {
     npm: function() {
       var self = this;
       var done;
@@ -107,47 +96,50 @@ module.exports = yeoman.generators.Base.extend({
       if (this.skipInstall === false) {
         done = this.async();
 
-        /*jshint expr:true */
-        this.log.write()
-          .info('Running ' + chalk.yellow('npm install') + ' ' +
-            'to install the required dependencies. ')
+        this.log
+          .write()
+          .info('Running ' + chalk.yellow('npm install --save-dev') + ' ' +
+            'to install the required devDependencies.')
           .info(chalk.yellow('This might take a few moments'))
           .write();
-        /*jshint expr:false */
 
         var args = list.packages(this.whichPP);
         args.unshift('i');
         args.push('--save-dev');
 
-        this.spawnCommand('npm', args).on('close', function() {
-          self.spawnCommand('npm', ['run-script', 'install']).on('close', done);
-        });
+        this.spawnCommand('npm', args)
+          .on('close', function() {
+            self.spawnCommand('npm', ['run-script', 'postinstall'])
+              .on('close', done)
+              .on('error', function(err) {
+                self.messages.push('Error: npm run-script postinstall');
+                done();
+              });
+          })
+          .on('error', function(err) {
+            self.messages.push('Error: npm i --save-dev libs...');
+            done();
+          });
       }
     },
   },
   end: {
-    cleanup: function() {
-      var fileCoffee = path.join(this.destinationRoot(), 'Gruntfile.coffee');
-      var fileJs = path.join(this.destinationRoot(), 'Gruntfile.js');
-      if (this.fs.exists(fileCoffee)) {
-        this.conflicter.force = true;
-        this.fs.delete(fileJs);
-      }
-    },
     msg: function() {
       if (this.messages.length === 0) {
-        var cowsay = this.readFileAsString(path.join(__dirname, './COWSAY'));
-        /*jshint expr:true */
-        this.log.write()
+        this.log
+          .write()
           .ok('Success!!!')
-          .info(chalk.red(cowsay));
-        /*jshint expr:false */
+          .write(chalk.red(this.read(this.templatePath('cowsay'))))
+          .write();
         return;
       }
-      this.log.write().error('There were some errors during the process:').write();
-      for (var i = 0, m;
-        (m = this.messages[i]); i++) {
-        this.log.write((i + 1) + ' ' + m);
+      this.log
+        .write()
+        .error('There were some errors during the process:')
+        .write();
+      for (var i = 0, m; (m = this.messages[i]); i++) {
+        this.log
+          .write((i + 1) + ' ' + m);
       }
     }
   }

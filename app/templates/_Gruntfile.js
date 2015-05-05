@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(grunt) {
-  require('load-grunt-tasks')(grunt);
+  require('jit-grunt')(grunt);
   require('time-grunt')(grunt);
   grunt.file.defaultEncoding = 'utf8';
   grunt.initConfig({

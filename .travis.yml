@@ -3,6 +3,3 @@ language: node_js
 node_js:
   - 'iojs'
   - '0.12'
-before_script:
-  - git config --global user.name "Travis-CI"
-  - git config --global user.email "dummy@example.org"

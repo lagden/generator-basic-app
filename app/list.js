@@ -17,8 +17,9 @@ function packages(pp) {
     'grunt-contrib-watch',
     'grunt-fixmyjs',
     'grunt-minify-html',
+    'http-server',
+    'jit-grunt',
     'jshint-stylish',
-    'load-grunt-tasks',
     'time-grunt',
     'volo'
   ];

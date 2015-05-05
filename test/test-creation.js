@@ -34,7 +34,7 @@ describe('yo basic-app', function() {
       '.editorconfig',
       '.gitignore',
       '.jshintrc',
-      'Gruntfile.coffee',
+      'Gruntfile.js',
       'README.md',
       'coffee/config.coffee',
       'coffee/main.coffee',

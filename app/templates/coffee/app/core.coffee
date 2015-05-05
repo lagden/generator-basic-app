@@ -4,10 +4,9 @@ define [
   'templates/sample'
 ], (template) ->
 
-  d = document;
-  $ = (el) -> d.querySelector el
+  qS = document.querySelector.bind document
 
-  $info = $('#info')
+  $info = qS '#info'
   $info.insertAdjacentHTML 'afterbegin', template
     name: navigator.appName
     version: navigator.appVersion
