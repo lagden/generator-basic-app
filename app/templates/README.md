@@ -1,11 +1,11 @@
-Basic APP
+Basic App
 =========
 
 Making a better and awesome web!!!
 
 ## Requirement
 
-If you are using Sass as your preprocessors, you must install [libsass](http://libsass.org/) before.
+If you are using Sass as your preprocessor, you must install [libsass](http://libsass.org/) before.
 Why?! Because is more fast than Ruby version
 
 ## Install
@@ -14,17 +14,19 @@ Run `npm i`
 
 ### Sass
 
-If it's necessary!
+**If necessary!**
 
-If you are using `OSX`, you can install `libsass` using [Homebrew](http://brew.sh/):
+If you are using `OS X`, you can install `libsass` using [Homebrew](http://brew.sh/):
 
-    brew update
-    brew install libsass
-    brew install sassc
+```
+brew update
+brew install libsass
+brew install sassc
+```
 
 ## Usage
 
-`grunt serve`
+`npm start` or `grunt serve`
 
 ## Credit
 
