@@ -43,11 +43,14 @@ module.exports = yeoman.generators.Base.extend({
     this.directory('jade');
 
     // Stylus or Sass + Compass
-    this.directory(this.whichPP);
+    if (this.usePreCSS) {
+      this.directory(this.whichPP);
+    }
 
     // Others
     this.copy('README.md');
     this.copy('editorconfig', '.editorconfig');
+    this.copy('jscsrc', '.jscsrc');
     this.copy('jshintrc', '.jshintrc');
     this.copy('gitignore', '.gitignore');
     this.copy('_Gruntfile.js', 'Gruntfile.js');
@@ -61,9 +64,16 @@ module.exports = yeoman.generators.Base.extend({
   },
   writing: {
     grunt: function() {
-      this.gruntfile.insertConfig('project', gruntConfig.folders(this.whichPP));
-      this.gruntfile.insertConfig(this.whichPP, gruntConfig[this.whichPP]());
-      this.gruntfile.registerTask('styles', [this.whichPP, 'autoprefixer']);
+      if (this.usePreCSS) {
+        this.gruntfile.insertConfig(
+          'project', gruntConfig.folders(this.whichPP)
+        );
+        this.gruntfile.insertConfig(this.whichPP, gruntConfig[this.whichPP]());
+        this.gruntfile.registerTask('styles', [this.whichPP, 'autoprefixer']);
+      } else {
+        this.gruntfile.insertConfig('project', gruntConfig.folders());
+        this.gruntfile.registerTask('styles', ['autoprefixer']);
+      }
     },
     package: function() {
       this.log
@@ -80,7 +90,7 @@ module.exports = yeoman.generators.Base.extend({
       pkg.scripts.start = 'http-server dev -o -a127.0.0.1 -p8285';
       pkg.volo.dependencies.require = 'jrburke/requirejs';
       pkg.volo.dependencies.almond = 'jrburke/almond';
-      pkg.volo.dependencies.jade = 'jadejs/jade';
+      pkg.volo.dependencies.jade = 'jadejs/jade#runtime.js';
       if (this.useJquery) {
         pkg.volo.dependencies.jquery = 'jquery/jquery';
       }
@@ -103,7 +113,7 @@ module.exports = yeoman.generators.Base.extend({
           .info(chalk.yellow('This might take a few moments'))
           .write();
 
-        var args = list.packages(this.whichPP);
+        var args = list.packages(this.whichPP, this.usePreCSS);
         args.unshift('i');
         args.push('--save-dev');
 
@@ -137,7 +147,7 @@ module.exports = yeoman.generators.Base.extend({
         .write()
         .error('There were some errors during the process:')
         .write();
-      for (var i = 0, m; (m = this.messages[i]); i++) {
+      for (var i = 0, m; ( m = this.messages[i]); i++) {
         this.log
           .write((i + 1) + ' ' + m);
       }

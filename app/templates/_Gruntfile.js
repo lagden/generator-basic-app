@@ -142,7 +142,8 @@ module.exports = function(grunt) {
         options: {
           optimize: 'uglify2',
           uglify2: {
-            warnings: false,
+            warnings: true,
+            mangle: true,
             compress: {
               sequences: true,
               properties: true,
@@ -151,11 +152,11 @@ module.exports = function(grunt) {
               drop_console: true
             }
           },
-          optimizeCss: 'standard',
+          optimizeCss: 'none',
           generateSourceMaps: true,
           keepAmdefine: true,
           preserveLicenseComments: false,
-          findNestedDependencies: true,
+          findNestedDependencies: false,
           useStrict: true,
           baseUrl: '<%= project.dev %>/js/lib',
           mainConfigFile: '<%= project.dev %>/js/config.js',

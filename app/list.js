@@ -1,9 +1,8 @@
 'use strict';
 
-function packages(pp) {
+function packages(pp, usePP) {
   var task = (pp === 'stylus') ? 'grunt-contrib-stylus' : 'grunt-sass';
-  return [
-    task,
+  var packs = [
     'grunt',
     'grunt-autoprefixer',
     'grunt-browser-sync',
@@ -19,10 +18,15 @@ function packages(pp) {
     'grunt-minify-html',
     'http-server',
     'jit-grunt',
-    'jshint-stylish',
     'time-grunt',
     'volo'
   ];
+
+  if(usePP) {
+    packs.push(task);
+  }
+
+  return packs;
 }
 
 module.exports = {

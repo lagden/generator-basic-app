@@ -1,6 +1,7 @@
 'use strict';
 
 function folders(pp) {
+  pp = pp || 'dev/css';
   var project = {
     prod   : 'build',
     dev    : 'dev',
@@ -17,7 +18,7 @@ function sass() {
     dev: {
       options: {
         outputStyle  : 'expanded',
-        precision    : 5,
+        precision    : 4,
         sourcemap    : 'none',
         includePaths : []
       },

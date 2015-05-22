@@ -15,9 +15,17 @@ function questions(defaults) {
     message: 'Qual o nome do desenvolvedor do projeto?',
     default: defaults.projectAuthor || 'Thiago Lagden'
   }, {
+    name: 'usePreCSS',
+    type: 'confirm',
+    message: 'Deseja utilizar algum pré-processador de CSS?',
+    default: true
+  }, {
+    when: function(response) {
+      return response.usePreCSS
+    },
     name: 'whichPP',
     type: 'list',
-    message: 'Escolha o pré-processador de css?',
+    message: 'Escolha o pré-processador de CSS?',
     choices: ['sass', 'stylus'],
     default: 1
   }, {
