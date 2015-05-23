@@ -1,0 +1,13 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-family: Consolas, "Liberation Mono", Courier;
+  color: #808080;
+  background-color: #fff;
+}
+.basic-app {
+  padding: 1em;
+}

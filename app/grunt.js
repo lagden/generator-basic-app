@@ -1,34 +1,52 @@
 'use strict';
 
-function folders(pp) {
-  pp = pp || 'dev/css';
+function folders(whichPP) {
+  whichPP = whichPP || 'dev/css';
   var project = {
-    prod   : 'build',
-    dev    : 'dev',
-    tmp    : 'tmp',
-    coffee : 'coffee',
-    jade   : 'jade',
-    pre    : pp
+    prod: 'build',
+    dev: 'dev',
+    tmp: 'tmp',
+    coffee: 'coffee',
+    jade: 'jade',
+    css: whichPP
   };
   return JSON.stringify(project);
+}
+
+function autoprefixer(usePP) {
+  var cwdDir = usePP ? '<%= project.tmp %>/css' : '<%= project.dev %>/css';
+  var autoprefixer = {
+    options: {
+      browsers: ['last 1 version']
+    },
+    files: {
+      expand: true,
+      flatten: false,
+      cwd: cwdDir,
+      src: ['*.css'],
+      dest: '<%= project.dev %>/css',
+      ext: '.css'
+    }
+  };
+  return JSON.stringify(autoprefixer);
 }
 
 function sass() {
   var sass = {
     dev: {
       options: {
-        outputStyle  : 'expanded',
-        precision    : 4,
-        sourcemap    : 'none',
-        includePaths : []
+        outputStyle: 'expanded',
+        precision: 4,
+        sourcemap: 'none',
+        includePaths: []
       },
       files: [{
-        expand  : true,
-        flatten : false,
-        cwd     : '<%= project.pre %>',
-        src     : ['*.sass'],
-        dest    : '<%= project.tmp %>/css',
-        ext     : '.css'
+        expand: true,
+        flatten: false,
+        cwd: '<%= project.css %>',
+        src: ['*.sass'],
+        dest: '<%= project.tmp %>/css',
+        ext: '.css'
       }]
     }
   };
@@ -42,12 +60,12 @@ function stylus() {
         compress: false
       },
       files: [{
-        expand  : true,
-        flatten : false,
-        cwd     : '<%= project.pre %>',
-        src     : ['*.styl'],
-        dest    : '<%= project.tmp %>/css',
-        ext     : '.css'
+        expand: true,
+        flatten: false,
+        cwd: '<%= project.css %>',
+        src: ['*.styl'],
+        dest: '<%= project.tmp %>/css',
+        ext: '.css'
       }]
     }
   };
@@ -55,7 +73,8 @@ function stylus() {
 }
 
 module.exports = {
-  'sass'    : sass,
-  'stylus'  : stylus,
-  'folders' : folders
+  'sass': sass,
+  'stylus': stylus,
+  'folders': folders,
+  'autoprefixer': autoprefixer,
 };

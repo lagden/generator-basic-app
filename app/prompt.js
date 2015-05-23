@@ -15,13 +15,13 @@ function questions(defaults) {
     message: 'Qual o nome do desenvolvedor do projeto?',
     default: defaults.projectAuthor || 'Thiago Lagden'
   }, {
-    name: 'usePreCSS',
+    name: 'usePP',
     type: 'confirm',
     message: 'Deseja utilizar algum pré-processador de CSS?',
     default: true
   }, {
     when: function(response) {
-      return response.usePreCSS
+      return response.usePP;
     },
     name: 'whichPP',
     type: 'list',

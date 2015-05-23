@@ -81,26 +81,13 @@ module.exports = function(grunt) {
         }]
       }
     },
-    autoprefixer: {
-      options: {
-        browsers: ['last 1 version']
-      },
-      files: {
-        expand: true,
-        flatten: false,
-        cwd: '<%= project.tmp %>/css',
-        src: ['*.css'],
-        dest: '<%= project.dev %>/css',
-        ext: '.css'
-      }
-    },
     watch: {
       script: {
         files: ['<%= project.coffee %>/**/*.coffee'],
         tasks: ['scripts']
       },
-      pre: {
-        files: ['<%= project.pre %>/**/*'],
+      css: {
+        files: ['<%= project.css %>/**/*'],
         tasks: ['styles']
       },
       jadeToHtml: {
@@ -142,21 +129,24 @@ module.exports = function(grunt) {
         options: {
           optimize: 'uglify2',
           uglify2: {
-            warnings: true,
+            warnings: false,
             mangle: true,
             compress: {
+              evaluate: false,
               sequences: true,
               properties: true,
-              drop_debugger: true,
               unused: true,
-              drop_console: true
+              'hoist_funs': false,
+              'hoist_vars': false,
+              'drop_debugger': true,
+              'drop_console': true
             }
           },
           optimizeCss: 'none',
           generateSourceMaps: true,
           keepAmdefine: true,
           preserveLicenseComments: false,
-          findNestedDependencies: false,
+          findNestedDependencies: true,
           useStrict: true,
           baseUrl: '<%= project.dev %>/js/lib',
           mainConfigFile: '<%= project.dev %>/js/config.js',
@@ -201,7 +191,7 @@ module.exports = function(grunt) {
       }
     },
     concurrent: {
-      dev: ['scripts', 'styles', 'jade:js', 'jade:html']
+      dev: ['scripts', 'styles', 'jade']
     },
     clean: {
       dist: ['<%= project.prod %>'],

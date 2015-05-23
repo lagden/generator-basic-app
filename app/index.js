@@ -4,7 +4,7 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 
 var prompt = require('./prompt');
-var list = require('./list');
+var packs = require('./packs');
 var gruntConfig = require('./grunt');
 
 module.exports = yeoman.generators.Base.extend({
@@ -43,7 +43,7 @@ module.exports = yeoman.generators.Base.extend({
     this.directory('jade');
 
     // Stylus or Sass + Compass
-    if (this.usePreCSS) {
+    if (this.usePP) {
       this.directory(this.whichPP);
     }
 
@@ -64,14 +64,14 @@ module.exports = yeoman.generators.Base.extend({
   },
   writing: {
     grunt: function() {
-      if (this.usePreCSS) {
-        this.gruntfile.insertConfig(
-          'project', gruntConfig.folders(this.whichPP)
-        );
-        this.gruntfile.insertConfig(this.whichPP, gruntConfig[this.whichPP]());
-        this.gruntfile.registerTask('styles', [this.whichPP, 'autoprefixer']);
+      this.gruntfile
+        .insertConfig('project', gruntConfig.folders(this.whichPP))
+        .insertConfig('autoprefixer', gruntConfig.autoprefixer(this.usePP));
+      if (this.usePP) {
+        this.gruntfile
+          .insertConfig(this.whichPP, gruntConfig[this.whichPP]())
+          .registerTask('styles', [this.whichPP, 'autoprefixer']);
       } else {
-        this.gruntfile.insertConfig('project', gruntConfig.folders());
         this.gruntfile.registerTask('styles', ['autoprefixer']);
       }
     },
@@ -79,7 +79,7 @@ module.exports = yeoman.generators.Base.extend({
       this.log
         .info('Configuring package.json');
 
-      var filepath = this.destinationPath('package.json')
+      var filepath = this.destinationPath('package.json');
       var pkg = JSON.parse(this.read(filepath));
 
       pkg.name = this._.slugify(this.projectName);
@@ -113,7 +113,7 @@ module.exports = yeoman.generators.Base.extend({
           .info(chalk.yellow('This might take a few moments'))
           .write();
 
-        var args = list.packages(this.whichPP, this.usePreCSS);
+        var args = packs.packages(this.whichPP, this.usePP);
         args.unshift('i');
         args.push('--save-dev');
 
@@ -121,12 +121,12 @@ module.exports = yeoman.generators.Base.extend({
           .on('close', function() {
             self.spawnCommand('npm', ['run-script', 'postinstall'])
               .on('close', done)
-              .on('error', function(err) {
+              .on('error', function() {
                 self.messages.push('Error: npm run-script postinstall');
                 done();
               });
           })
-          .on('error', function(err) {
+          .on('error', function() {
             self.messages.push('Error: npm i --save-dev libs...');
             done();
           });
@@ -142,14 +142,16 @@ module.exports = yeoman.generators.Base.extend({
           .write(chalk.red(this.read(this.templatePath('cowsay'))))
           .write();
         return;
-      }
-      this.log
-        .write()
-        .error('There were some errors during the process:')
-        .write();
-      for (var i = 0, m; ( m = this.messages[i]); i++) {
+      } else {
         this.log
-          .write((i + 1) + ' ' + m);
+          .write()
+          .error('There were some errors during the process:')
+          .write();
+        for (var i = 0, len = this.messages.length; i < len; i++) {
+          this.log
+            .write((i + 1) + ' ' + this.messages[i])
+            .write();
+        }
       }
     }
   }

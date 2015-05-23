@@ -22,7 +22,7 @@ function packages(pp, usePP) {
     'volo'
   ];
 
-  if(usePP) {
+  if (usePP) {
     packs.push(task);
   }
 
