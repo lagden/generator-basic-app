@@ -191,7 +191,7 @@ module.exports = function(grunt) {
       }
     },
     concurrent: {
-      dev: ['scripts', 'styles', 'jade']
+      dev: ['scripts', 'styles', 'jade:html', 'jade:js']
     },
     clean: {
       dist: ['<%= project.prod %>'],
